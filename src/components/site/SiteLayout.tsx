@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { Link, useLocation } from "@tanstack/react-router";
+import { Sun, Moon, Menu, X, Home } from "lucide-react";
 import logoLight from "@/assets/aloralogolight.png";
 import logoDark from "@/assets/aloralogodark.png";
 
@@ -180,12 +180,29 @@ function Footer({ theme }: { theme: "light" | "dark" }) {
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const { theme, toggle } = useTheme();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col pt-16 lg:pt-[72px]">
       <Nav theme={theme} toggle={toggle} />
       <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
         {children}
       </main>
+      
+      {/* Mobile/Tablet Back to Home Button — only shows on non-home pages */}
+      {!isHome && (
+        <div className="lg:hidden fixed bottom-6 right-6 z-40">
+          <Link
+            to="/"
+            className="flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-primary text-primary-foreground font-display font-semibold text-xs shadow-glow border border-primary/20 transition-transform active:scale-95 cursor-pointer"
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>Back to Home</span>
+          </Link>
+        </div>
+      )}
+
       <Footer theme={theme} />
     </div>
   );

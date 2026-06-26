@@ -372,10 +372,10 @@ function Index() {
       <Hero />
       <IndustriesMarquee />
       <Problems />
-      <RevenueLeakageCalculator />
       <WhyAlora />
       <Voices />
       <Process />
+      <RevenueLeakageCalculator />
       <FAQ />
       <CTA />
     </SiteLayout>
