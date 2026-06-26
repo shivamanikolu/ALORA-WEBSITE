@@ -88,6 +88,57 @@ function Contact() {
   const [honeypot, setHoneypot] = useState("");
   const [consentChecked, setConsentChecked] = useState(false);
   const [pageLoadTime] = useState(Date.now());
+  const [turnstileToken, setTurnstileToken] = useState("");
+
+  useEffect(() => {
+    // 1. Declare global callback for Turnstile
+    (window as any).onTurnstileSuccess = (token: string) => {
+      setTurnstileToken(token);
+    };
+    (window as any).onTurnstileExpired = () => {
+      setTurnstileToken("");
+    };
+
+    // 2. Load Turnstile script dynamically if not already loaded
+    if (!document.getElementById("cloudflare-turnstile-script")) {
+      const script = document.createElement("script");
+      script.id = "cloudflare-turnstile-script";
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback";
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+
+    // 3. Define the onload callback
+    (window as any).onloadTurnstileCallback = () => {
+      renderTurnstile();
+    };
+
+    // 4. If turnstile is already loaded, render immediately
+    if ((window as any).turnstile) {
+      renderTurnstile();
+    }
+
+    function renderTurnstile() {
+      const container = document.getElementById("turnstile-container");
+      if (container && (window as any).turnstile) {
+        // Clear previous widget
+        container.innerHTML = "";
+        (window as any).turnstile.render("#turnstile-container", {
+          sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA",
+          callback: "onTurnstileSuccess",
+          "expired-callback": "onTurnstileExpired",
+        });
+      }
+    }
+
+    // Cleanup callbacks
+    return () => {
+      delete (window as any).onTurnstileSuccess;
+      delete (window as any).onTurnstileExpired;
+      delete (window as any).onloadTurnstileCallback;
+    };
+  }, []);
 
   useEffect(() => {
     if (!email) {
@@ -166,6 +217,12 @@ function Contact() {
                 return;
               }
 
+              // Turnstile CAPTCHA check
+              if (!turnstileToken) {
+                setFormError("Please verify the CAPTCHA check.");
+                return;
+              }
+
               // Honeypot check (client-side prevention)
               if (honeypot) {
                 setSubmitted(true);
@@ -199,6 +256,7 @@ function Contact() {
                 data.utmContent = localStorage.getItem("alora_utm_content") || "";
                 data.utmTerm = localStorage.getItem("alora_utm_term") || "";
                 data.submissionDurationMs = String(Date.now() - pageLoadTime);
+                data.turnstileToken = turnstileToken;
               }
 
               try {
@@ -287,9 +345,14 @@ function Contact() {
               </label>
             </div>
 
+            {/* Cloudflare Turnstile CAPTCHA container */}
+            <div className="flex justify-center py-2">
+              <div id="turnstile-container"></div>
+            </div>
+
             <button
               type="submit"
-              disabled={isSubmitting || isVerifyingEmail || !!emailError || !emailVerified || !consentChecked}
+              disabled={isSubmitting || isVerifyingEmail || !!emailError || !emailVerified || !consentChecked || !turnstileToken}
               className="btn-primary rounded-full px-7 py-3.5 font-display font-semibold inline-flex items-center gap-2 w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isSubmitting ? (

@@ -135,8 +135,8 @@ export async function handleContactSubmission(
   const metadata = extractMetadata(request, rawPayload);
 
   // 9. Sync lead record to Google Sheets
-  // format timestamp in Eastern Time Zone (Clinic standard)
-  const timestamp = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  // format timestamp in Indian Standard Time (IST)
+  const timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
   const leadRow: LeadRowData = {
     timestamp,
     fullName: sanitizedName,
