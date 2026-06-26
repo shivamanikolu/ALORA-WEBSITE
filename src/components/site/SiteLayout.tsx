@@ -42,12 +42,22 @@ const navLinks = [
 
 function Nav({ theme, toggle }: { theme: "light" | "dark"; toggle: () => void }) {
   const [open, setOpen] = useState(false);
-  const [showDarkModePromo, setShowDarkModePromo] = useState(true);
+
+  // Only show promo on fresh page load / refresh, NOT on SPA navigation
+  const [showDarkModePromo, setShowDarkModePromo] = useState(() => {
+    if (typeof window !== "undefined") {
+      if ((window as any).__alora_dm_promo_shown) return false;
+      (window as any).__alora_dm_promo_shown = true;
+      return true;
+    }
+    return false;
+  });
 
   useEffect(() => {
+    if (!showDarkModePromo) return;
     const timer = setTimeout(() => setShowDarkModePromo(false), 4200);
     return () => clearTimeout(timer);
-  }, []);
+  }, [showDarkModePromo]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/60 pt-[env(safe-area-inset-top,0px)]">
@@ -80,11 +90,11 @@ function Nav({ theme, toggle }: { theme: "light" | "dark"; toggle: () => void })
 
             {/* Cinematic Dark Mode Promo Tooltip */}
             {showDarkModePromo && (
-              <div className="dm-promo-tooltip absolute top-full right-0 sm:right-1/2 sm:translate-x-1/2 mt-3 z-[60]">
-                {/* Arrow pointing up to the button */}
-                <div className="flex justify-center sm:justify-center relative">
+              <div className="dm-promo-tooltip absolute top-full right-0 mt-2 z-[60]">
+                {/* Arrow — positioned under button center (button is w-9 = 36px, so center ≈ 18px from right, minus half arrow ≈ 13px) */}
+                <div className="flex justify-end pr-[13px]">
                   <div
-                    className="w-3 h-3 rotate-45 -mb-1.5 mr-4 sm:mr-0"
+                    className="w-2.5 h-2.5 rotate-45 -mb-[5px]"
                     style={{
                       background: "linear-gradient(135deg, oklch(0.55 0.22 285), oklch(0.65 0.22 305))",
                     }}
@@ -92,16 +102,16 @@ function Nav({ theme, toggle }: { theme: "light" | "dark"; toggle: () => void })
                 </div>
                 {/* Tooltip body */}
                 <div
-                  className="rounded-2xl px-4 py-2.5 shadow-lg whitespace-nowrap flex items-center gap-2"
+                  className="rounded-xl px-3.5 py-2 shadow-lg whitespace-nowrap flex items-center gap-1.5"
                   style={{
                     background: "linear-gradient(135deg, oklch(0.55 0.22 285), oklch(0.65 0.22 305))",
                   }}
                 >
-                  <span className="text-sm">🌙</span>
-                  <span className="dm-shimmer-text text-xs sm:text-sm font-display font-bold tracking-wide">
+                  <span className="text-xs">🌙</span>
+                  <span className="dm-shimmer-text text-xs font-display font-bold tracking-wide">
                     Try Dark Mode
                   </span>
-                  <span className="text-sm">✨</span>
+                  <span className="text-xs">✨</span>
                 </div>
               </div>
             )}
