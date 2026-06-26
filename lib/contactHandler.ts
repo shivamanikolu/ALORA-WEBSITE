@@ -92,21 +92,19 @@ export async function handleContactSubmission(
     };
   }
 
-  // 5. CAPTCHA Verification (Optional depending on Turnstile key presence)
-  if (turnstileToken) {
-    const captchaOk = await verifyTurnstile(turnstileToken, ip);
-    if (!captchaOk) {
-      logger.warn({
-        category: "SPAM_ATTEMPT",
-        message: "Cloudflare Turnstile token validation failed.",
-        email: validatedData.email,
-        ip,
-      });
-      return {
-        success: false,
-        message: "Security check failed. Please refresh the page and try again.",
-      };
-    }
+  // 5. CAPTCHA Verification (Mandatory for all submissions)
+  const captchaOk = await verifyTurnstile(turnstileToken || "", ip);
+  if (!captchaOk) {
+    logger.warn({
+      category: "SPAM_ATTEMPT",
+      message: "Cloudflare Turnstile token validation failed or token missing.",
+      email: validatedData.email,
+      ip,
+    });
+    return {
+      success: false,
+      message: "Captcha verification failed.",
+    };
   }
 
   // 6. Multi-Factor Spam Scoring

@@ -17,38 +17,51 @@ export function generateSessionId(): string {
 
 /**
  * Verifies Cloudflare Turnstile CAPTCHA.
- * If TURNSTILE_SECRET_KEY is not defined in environment variables, it defaults to true.
+ * Reject any submission without successful verification.
  */
 export async function verifyTurnstile(token: string, ip?: string): Promise<boolean> {
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
   if (!secretKey) {
-    // If the Turnstile secret key isn't configured, bypass verification (developer/fallback mode)
-    return true;
+    console.warn("Cloudflare Turnstile secret key not configured in environment variables.");
+    return false;
   }
 
   if (!token) {
+    console.warn("Cloudflare Turnstile token missing or empty.");
     return false;
   }
 
   try {
+    const params = new URLSearchParams({
+      secret: secretKey,
+      response: token,
+    });
+    if (ip) {
+      params.append("remoteip", ip);
+    }
+
     const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify({
-        secret: secretKey,
-        response: token,
-        remoteip: ip,
-      }),
+      body: params.toString(),
     });
 
     const data = await response.json();
-    return !!data.success;
+    if (data.success) {
+      // Captcha success logged securely (without logging the token itself)
+      console.log("Captcha verification succeeded");
+      return true;
+    } else {
+      // Captcha failure logged securely
+      console.warn("Captcha verification failed:", data["error-codes"] || "Invalid token");
+      return false;
+    }
   } catch (error) {
-    console.error("Cloudflare Turnstile verification network error:", error);
-    // Fail-open to avoid losing business leads due to Cloudflare API downtime, but log it.
-    return true;
+    console.error("Cloudflare Turnstile verification network/downtime error:", error);
+    // Fail-closed to prevent bypass under any downtime or network failures
+    return false;
   }
 }
 

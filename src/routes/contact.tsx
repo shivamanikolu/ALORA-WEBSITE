@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ArrowRight, CheckCircle2, Loader2, Check, AlertCircle } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
+import Turnstile from "react-turnstile";
 
 // Zod Validation Schema
 const contactSchema = z.object({
@@ -99,55 +100,9 @@ function Contact() {
   const [pageLoadTime] = useState(Date.now());
   const [turnstileToken, setTurnstileToken] = useState("");
 
-  useEffect(() => {
-    // 1. Declare global callback for Turnstile
-    (window as any).onTurnstileSuccess = (token: string) => {
-      setTurnstileToken(token);
-    };
-    (window as any).onTurnstileExpired = () => {
-      setTurnstileToken("");
-    };
-
-    // 2. Load Turnstile script dynamically if not already loaded
-    if (!document.getElementById("cloudflare-turnstile-script")) {
-      const script = document.createElement("script");
-      script.id = "cloudflare-turnstile-script";
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback";
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    }
-
-    // 3. Define the onload callback
-    (window as any).onloadTurnstileCallback = () => {
-      renderTurnstile();
-    };
-
-    // 4. If turnstile is already loaded, render immediately
-    if ((window as any).turnstile) {
-      renderTurnstile();
-    }
-
-    function renderTurnstile() {
-      const container = document.getElementById("turnstile-container");
-      if (container && (window as any).turnstile) {
-        // Clear previous widget
-        container.innerHTML = "";
-        (window as any).turnstile.render("#turnstile-container", {
-          sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA",
-          callback: "onTurnstileSuccess",
-          "expired-callback": "onTurnstileExpired",
-        });
-      }
-    }
-
-    // Cleanup callbacks
-    return () => {
-      delete (window as any).onTurnstileSuccess;
-      delete (window as any).onTurnstileExpired;
-      delete (window as any).onloadTurnstileCallback;
-    };
-  }, []);
+  // Turnstile Ref & States
+  const [turnstileInstance, setTurnstileInstance] = useState<any>(null);
+  const [turnstileState, setTurnstileState] = useState<"loading" | "verified" | "error" | "expired">("loading");
 
   useEffect(() => {
     if (!email) {
@@ -227,14 +182,17 @@ function Contact() {
               }
 
               // Turnstile CAPTCHA check
-              if (!turnstileToken) {
-                setFormError("Please verify the CAPTCHA check.");
+              if (!turnstileToken || turnstileState !== "verified") {
+                setFormError("Please complete the security verification.");
                 return;
               }
 
               // Honeypot check (client-side prevention)
               if (honeypot) {
                 setSubmitted(true);
+                // Automatically clear token after successful submission
+                setTurnstileToken("");
+                setTurnstileState("loading");
                 return;
               }
 
@@ -272,11 +230,22 @@ function Contact() {
                 const response = await submitContactForm({ data });
                 if (response.success) {
                   setSubmitted(true);
+                  // Automatically clear token after successful submission
+                  setTurnstileToken("");
+                  setTurnstileState("loading");
                 } else {
-                  setFormError("Submission failed. Please try again.");
+                  setFormError(response.message || "Submission failed. Please try again.");
+                  // Reset widget after failed submission
+                  setTurnstileToken("");
+                  setTurnstileState("loading");
+                  turnstileInstance?.reset();
                 }
               } catch (err: any) {
                 setFormError(err.message || "An unexpected error occurred.");
+                // Reset widget after failed submission
+                setTurnstileToken("");
+                setTurnstileState("loading");
+                turnstileInstance?.reset();
               } finally {
                 setIsSubmitting(false);
               }
@@ -355,13 +324,44 @@ function Contact() {
             </div>
 
             {/* Cloudflare Turnstile CAPTCHA container */}
-            <div className="flex justify-center py-2">
-              <div id="turnstile-container"></div>
+            <div className="flex flex-col items-center justify-center py-2 space-y-2">
+              <Turnstile
+                sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+                onLoad={(widgetId, boundTurnstile) => {
+                  setTurnstileInstance(boundTurnstile);
+                  setTurnstileState("loading");
+                }}
+                onSuccess={(token) => {
+                  setTurnstileToken(token);
+                  setTurnstileState("verified");
+                }}
+                onError={() => {
+                  setTurnstileToken("");
+                  setTurnstileState("error");
+                }}
+                onExpire={() => {
+                  setTurnstileToken("");
+                  setTurnstileState("expired");
+                }}
+                appearance="always"
+                execution="render"
+                theme="auto"
+                language="auto"
+              />
+              {turnstileState === "loading" && (
+                <p className="text-xs text-muted-foreground">Please complete the security verification.</p>
+              )}
+              {turnstileState === "expired" && (
+                <p className="text-xs text-red-500 font-semibold">Verification expired. Please try again.</p>
+              )}
+              {turnstileState === "error" && (
+                <p className="text-xs text-red-500 font-semibold font-sans">Something went wrong. Please try again.</p>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={isSubmitting || isVerifyingEmail || !!emailError || !emailVerified || !consentChecked || !turnstileToken}
+              disabled={isSubmitting || isVerifyingEmail || !!emailError || !emailVerified || !consentChecked || turnstileState !== "verified"}
               className="btn-primary rounded-full px-7 py-3.5 font-display font-semibold inline-flex items-center gap-2 w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isSubmitting ? (
