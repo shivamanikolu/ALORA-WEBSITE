@@ -134,7 +134,17 @@ export async function handleContactSubmission(
 
   // 9. Sync lead record to Google Sheets
   // format timestamp in Indian Standard Time (IST)
-  const timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+  const timestamp = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", dateStyle: "medium", timeStyle: "medium" });
+  const submissionTimeIST = new Date().toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  }) + " IST";
   const leadRow: LeadRowData = {
     timestamp,
     fullName: sanitizedName,
@@ -160,7 +170,7 @@ export async function handleContactSubmission(
     utmContent: metadata.utmContent,
     utmTerm: metadata.utmTerm,
     sessionId: rawPayload.sessionId || "Unknown",
-    submissionTime: durationMs,
+    submissionTime: submissionTimeIST,
     spamScore: spamResult.score,
     captchaVerified: !!turnstileToken,
   };

@@ -26,7 +26,7 @@ export interface LeadRowData {
   utmContent: string;
   utmTerm: string;
   sessionId: string;
-  submissionTime: number; // submission time/duration in ms
+  submissionTime: string; // formatted Indian Standard Time (IST) timestamp
   spamScore: number;
   captchaVerified: boolean;
 }
