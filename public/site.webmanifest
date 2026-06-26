@@ -1,0 +1,16 @@
+{
+  "name": "ALORA Health",
+  "short_name": "ALORA",
+  "description": "HIPAA-compliant AI voice receptionists for clinics, hospitals, and healthcare practices.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#8C78C8",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}

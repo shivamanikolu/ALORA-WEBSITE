@@ -32,12 +32,12 @@ async function applySecurityHeadersAndCSP(response: Response): Promise<Response>
   // Create Strict CSP Whitelist
   const cspString = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' https://vercel.live https://*.vercel.app https://www.googletagmanager.com https://*.clarity.ms`,
+    `script-src 'self' 'nonce-${nonce}' 'sha256-VRKfizwnyQxtND310AsmNPoFx6XzMKrglq3F12CdZv8=' https://vercel.live https://*.vercel.app https://www.googletagmanager.com https://*.clarity.ms https://challenges.cloudflare.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: https://flagcdn.com https://*.vercel.app https://*.vercel.live",
     "connect-src 'self' https://cloudflare-dns.com https://*.clarity.ms https://*.google-analytics.com https://analytics.google.com https://*.vapi.ai https://*.bland.ai https://*.retellai.com wss://*.vercel.live ws://localhost:* http://localhost:*",
-    "frame-src 'self' https://vercel.live",
+    "frame-src 'self' https://vercel.live https://challenges.cloudflare.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
