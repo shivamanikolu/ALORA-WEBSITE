@@ -162,18 +162,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "url": "https://alora.health"
         })
       },
-      // Google Analytics 4 Script
+      // Google Analytics 4 Script (loads external library safely)
       {
         src: "https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX",
         async: true,
-      },
-      {
-        children: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-XXXXXXXXXX', { page_path: window.location.pathname });
-        `
       }
     ]
   }),
@@ -238,6 +230,15 @@ function RootComponent() {
       const sessionId = Array.from(array, (dec) => dec.toString(16).padStart(2, "0")).join("");
       localStorage.setItem("alora_session_id", sessionId);
     }
+
+    // 5. Initialize Google Analytics 4 dynamically to prevent CSP inline script blocks
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    function gtag(...args: any[]) {
+      (window as any).dataLayer.push(args);
+    }
+    (window as any).gtag = gtag;
+    gtag("js", new Date());
+    gtag("config", "G-XXXXXXXXXX", { page_path: window.location.pathname });
   }, []);
 
   return (
