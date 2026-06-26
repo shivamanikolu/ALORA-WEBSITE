@@ -259,7 +259,7 @@ function Contact() {
               </div>
             )}
 
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <Field label="Full name" name="name" required />
               <EmailField
                 label="Email"
@@ -412,17 +412,17 @@ function PhoneField({ label, name, required }: { label: string; name: string; re
   ];
 
   return (
-    <div>
+    <div className="min-w-0 overflow-hidden">
       <label className="block text-sm font-display font-semibold mb-2">
         {label}
         {required && <span className="text-primary"> *</span>}
       </label>
-      <div className="flex gap-2 relative w-full">
+      <div className="flex gap-2 relative w-full min-w-0">
         {/* Dropdown Toggle */}
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between rounded-xl bg-secondary/40 border border-border px-3 py-3 outline-none focus:border-primary w-[110px] text-sm text-foreground cursor-pointer"
+          className="flex items-center justify-between rounded-xl bg-secondary/40 border border-border px-2 sm:px-3 py-3 outline-none focus:border-primary w-[90px] sm:w-[110px] text-sm text-foreground cursor-pointer flex-shrink-0"
         >
           <div className="flex items-center gap-2">
             <img
@@ -489,7 +489,7 @@ function PhoneField({ label, name, required }: { label: string; name: string; re
 
 function Field({ label, name, type = "text", required }: { label: string; name: string; type?: string; required?: boolean }) {
   return (
-    <div>
+    <div className="min-w-0 overflow-hidden">
       <label className="block text-sm font-display font-semibold mb-2">{label}{required && <span className="text-primary"> *</span>}</label>
       <input name={name} type={type} required={required} className="w-full rounded-xl bg-secondary/40 border border-border px-4 py-3 outline-none focus:border-primary" />
     </div>
@@ -567,7 +567,7 @@ function EmailField({
   };
 
   return (
-    <div className="relative">
+    <div className="relative min-w-0 overflow-hidden">
       <label className="block text-sm font-display font-semibold mb-2">
         {label}
         {required && <span className="text-primary"> *</span>}

@@ -42,6 +42,13 @@ const navLinks = [
 
 function Nav({ theme, toggle }: { theme: "light" | "dark"; toggle: () => void }) {
   const [open, setOpen] = useState(false);
+  const [showDarkModePromo, setShowDarkModePromo] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowDarkModePromo(false), 4200);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/60 pt-[env(safe-area-inset-top,0px)]">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16 lg:h-[72px]">
@@ -61,13 +68,45 @@ function Nav({ theme, toggle }: { theme: "light" | "dark"; toggle: () => void })
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={toggle}
-            aria-label="Toggle theme"
-            className="w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors"
-          >
-            {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-          </button>
+          {/* Theme toggle with promo tooltip */}
+          <div className="relative">
+            <button
+              onClick={toggle}
+              aria-label="Toggle theme"
+              className={`w-9 h-9 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors ${showDarkModePromo ? "dm-glow-ring" : ""}`}
+            >
+              {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </button>
+
+            {/* Cinematic Dark Mode Promo Tooltip */}
+            {showDarkModePromo && (
+              <div className="dm-promo-tooltip absolute top-full right-0 sm:right-1/2 sm:translate-x-1/2 mt-3 z-[60]">
+                {/* Arrow pointing up to the button */}
+                <div className="flex justify-center sm:justify-center relative">
+                  <div
+                    className="w-3 h-3 rotate-45 -mb-1.5 mr-4 sm:mr-0"
+                    style={{
+                      background: "linear-gradient(135deg, oklch(0.55 0.22 285), oklch(0.65 0.22 305))",
+                    }}
+                  />
+                </div>
+                {/* Tooltip body */}
+                <div
+                  className="rounded-2xl px-4 py-2.5 shadow-lg whitespace-nowrap flex items-center gap-2"
+                  style={{
+                    background: "linear-gradient(135deg, oklch(0.55 0.22 285), oklch(0.65 0.22 305))",
+                  }}
+                >
+                  <span className="text-sm">🌙</span>
+                  <span className="dm-shimmer-text text-xs sm:text-sm font-display font-bold tracking-wide">
+                    Try Dark Mode
+                  </span>
+                  <span className="text-sm">✨</span>
+                </div>
+              </div>
+            )}
+          </div>
+
           <Link to="/contact" className="hidden sm:inline-flex btn-primary rounded-full px-5 py-2.5 text-sm font-semibold font-display">
             Book Free Consultation
           </Link>
