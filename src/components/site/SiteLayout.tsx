@@ -5,20 +5,29 @@ import logoLight from "@/assets/aloralogolight.png";
 import logoDark from "@/assets/aloralogodark.png";
 
 function useTheme() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    // Read persisted theme from localStorage on initial render
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("alora_theme");
+      if (saved === "dark" || saved === "light") return saved;
+    }
+    return "light";
+  });
+
+  // Sync the HTML class with the current theme state on mount and when theme changes
   useEffect(() => {
-    // Always start in light mode on each page load per spec.
-    document.documentElement.classList.remove("dark");
-    setTheme("light");
-  }, []);
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("alora_theme", theme);
+  }, [theme]);
+
   const toggle = () => {
-    setTheme((prev) => {
-      const next = prev === "light" ? "dark" : "light";
-      if (next === "dark") document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
-      return next;
-    });
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
+
   return { theme, toggle };
 }
 

@@ -92,6 +92,11 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  input, textarea, select {
+    max-width: 100%;
+    box-sizing: border-box;
   }
   h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
 }

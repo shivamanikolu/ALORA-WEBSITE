@@ -163,7 +163,7 @@ function Contact() {
       </section>
 
       <section className="py-16">
-        <div className="max-w-3xl mx-auto px-6">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 overflow-hidden">
           <form
             onSubmit={async (e) => {
               e.preventDefault();
@@ -250,7 +250,7 @@ function Contact() {
                 setIsSubmitting(false);
               }
             }}
-            className="card-elevated rounded-3xl p-8 lg:p-10 space-y-6"
+            className="card-elevated rounded-3xl p-5 sm:p-8 lg:p-10 space-y-6 overflow-hidden"
           >
             {formError && (
               <div className="bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl p-4 text-sm flex items-center gap-2 font-sans animate-shake">
@@ -417,7 +417,7 @@ function PhoneField({ label, name, required }: { label: string; name: string; re
         {label}
         {required && <span className="text-primary"> *</span>}
       </label>
-      <div className="flex gap-2 relative">
+      <div className="flex gap-2 relative w-full">
         {/* Dropdown Toggle */}
         <button
           type="button"
@@ -473,7 +473,7 @@ function PhoneField({ label, name, required }: { label: string; name: string; re
             setPhoneNumber(digits);
           }}
           placeholder="Phone number"
-          className="flex-1 rounded-xl bg-secondary/40 border border-border px-4 py-3 outline-none focus:border-primary font-sans"
+          className="flex-1 min-w-0 rounded-xl bg-secondary/40 border border-border px-4 py-3 outline-none focus:border-primary font-sans"
         />
 
         {/* Hidden combined value to submit in normal form data */}
