@@ -411,8 +411,10 @@ function PhoneField({ label, name, required }: { label: string; name: string; re
     { name: "Norway", code: "no", dial: "+47" },
   ];
 
+  const dropdownBtnRef = useRef<HTMLButtonElement>(null);
+
   return (
-    <div className="min-w-0 overflow-hidden">
+    <div className="min-w-0">
       <label className="block text-sm font-display font-semibold mb-2">
         {label}
         {required && <span className="text-primary"> *</span>}
@@ -420,6 +422,7 @@ function PhoneField({ label, name, required }: { label: string; name: string; re
       <div className="flex gap-2 relative w-full min-w-0">
         {/* Dropdown Toggle */}
         <button
+          ref={dropdownBtnRef}
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center justify-between rounded-xl bg-secondary/40 border border-border px-2 sm:px-3 py-3 outline-none focus:border-primary w-[90px] sm:w-[110px] text-sm text-foreground cursor-pointer flex-shrink-0"
@@ -435,11 +438,21 @@ function PhoneField({ label, name, required }: { label: string; name: string; re
           <span className="text-xs text-muted-foreground opacity-60">▼</span>
         </button>
 
-        {/* Dropdown Menu Overlay */}
+        {/* Dropdown Menu — uses fixed positioning to escape overflow-hidden parents */}
         {isOpen && (
           <>
-            <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-            <div className="absolute top-full left-0 mt-1 w-64 max-h-60 overflow-y-auto rounded-xl border border-border bg-card text-card-foreground shadow-lg z-50 py-1">
+            <div className="fixed inset-0 z-[9998]" onClick={() => setIsOpen(false)} />
+            <div
+              className="fixed w-64 max-h-60 overflow-y-auto rounded-xl border border-border bg-card text-card-foreground shadow-lg z-[9999] py-1"
+              style={{
+                top: dropdownBtnRef.current
+                  ? dropdownBtnRef.current.getBoundingClientRect().bottom + 4
+                  : 0,
+                left: dropdownBtnRef.current
+                  ? dropdownBtnRef.current.getBoundingClientRect().left
+                  : 0,
+              }}
+            >
               {countries.map((c) => (
                 <button
                   key={`${c.code}-${c.dial}`}
