@@ -42,22 +42,17 @@ const navLinks = [
 
 function Nav({ theme, toggle }: { theme: "light" | "dark"; toggle: () => void }) {
   const [open, setOpen] = useState(false);
+  const [showDarkModePromo, setShowDarkModePromo] = useState(false);
 
-  // Only show promo on fresh page load / refresh, NOT on SPA navigation
-  const [showDarkModePromo, setShowDarkModePromo] = useState(() => {
-    if (typeof window !== "undefined") {
-      if ((window as any).__alora_dm_promo_shown) return false;
-      (window as any).__alora_dm_promo_shown = true;
-      return true;
-    }
-    return false;
-  });
-
+  // Show promo only on fresh page load / refresh, NOT on SPA navigation.
+  // useEffect runs client-side only after hydration, avoiding SSR mismatch.
   useEffect(() => {
-    if (!showDarkModePromo) return;
+    if ((window as any).__alora_dm_promo_shown) return;
+    (window as any).__alora_dm_promo_shown = true;
+    setShowDarkModePromo(true);
     const timer = setTimeout(() => setShowDarkModePromo(false), 4200);
     return () => clearTimeout(timer);
-  }, [showDarkModePromo]);
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/60 pt-[env(safe-area-inset-top,0px)]">
