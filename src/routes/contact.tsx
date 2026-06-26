@@ -289,7 +289,7 @@ function Contact() {
 
             <button
               type="submit"
-              disabled={isSubmitting || isVerifyingEmail || !!emailError || !emailVerified}
+              disabled={isSubmitting || isVerifyingEmail || !!emailError || !emailVerified || !consentChecked}
               className="btn-primary rounded-full px-7 py-3.5 font-display font-semibold inline-flex items-center gap-2 w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isSubmitting ? (

@@ -144,7 +144,7 @@ export async function appendLeadToGoogleSheet(lead: LeadRowData): Promise<void> 
     const token = await getGoogleAccessToken(clientEmail, privateKey);
 
     // 2. Map lead object properties to raw row values matching the requested schema exactly
-    const rowValues = [
+    const rawRowValues = [
       lead.timestamp,
       lead.fullName,
       lead.email,
@@ -173,6 +173,17 @@ export async function appendLeadToGoogleSheet(lead: LeadRowData): Promise<void> 
       lead.spamScore,
       lead.captchaVerified ? "TRUE" : "FALSE",
     ];
+
+    // Escape formula injection or automatic formula parsing in Google Sheets
+    // by prefixing values starting with +, =, -, @ with a single quote.
+    const rowValues = rawRowValues.map((val) => {
+      if (typeof val === "string") {
+        if (val.startsWith("+") || val.startsWith("=") || val.startsWith("-") || val.startsWith("@")) {
+          return `'${val}`;
+        }
+      }
+      return val;
+    });
 
     // 3. Append to Sheet (writes to the first sheet dynamically in column range A to AA)
     const range = "A1:AA1"; 

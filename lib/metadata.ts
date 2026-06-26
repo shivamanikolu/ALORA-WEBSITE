@@ -43,11 +43,11 @@ export function extractMetadata(request: Request | null, clientData: Record<stri
   const landingPage = clientData.landingPage || "Unknown";
 
   // 5. UTM parameters (tracked on client landing and passed down)
-  const utmSource = clientData.utmSource || clientData.utm_source || "";
-  const utmMedium = clientData.utmMedium || clientData.utm_medium || "";
-  const utmCampaign = clientData.utmCampaign || clientData.utm_campaign || "";
-  const utmContent = clientData.utmContent || clientData.utm_content || "";
-  const utmTerm = clientData.utmTerm || clientData.utm_term || "";
+  const utmSource = clientData.utmSource || clientData.utm_source || "N/A";
+  const utmMedium = clientData.utmMedium || clientData.utm_medium || "N/A";
+  const utmCampaign = clientData.utmCampaign || clientData.utm_campaign || "N/A";
+  const utmContent = clientData.utmContent || clientData.utm_content || "N/A";
+  const utmTerm = clientData.utmTerm || clientData.utm_term || "N/A";
 
   return {
     ipAddress,
