@@ -16,6 +16,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { NetworkAnimation } from "@/components/site/NetworkAnimation";
 import { IndustriesMarquee } from "@/components/site/IndustriesMarquee";
 import { SITE_URL } from "../lib/config";
+import { RevenueLeakageCalculator } from "@/components/site/RevenueLeakageCalculator";
 
 const FAQS = [
   { q: "What exactly does ALORA do?", a: "ALORA provides AI voice receptionists for clinics, hospitals, and healthcare practices. Our AI answers calls 24/7, books appointments, reschedules visits, answers common patient questions, sends reminders, and supports your front desk team." },
@@ -371,6 +372,7 @@ function Index() {
       <Hero />
       <IndustriesMarquee />
       <Problems />
+      <RevenueLeakageCalculator />
       <WhyAlora />
       <Voices />
       <Process />
