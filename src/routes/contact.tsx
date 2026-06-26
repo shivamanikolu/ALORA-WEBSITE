@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle2, Loader2, Check, AlertCircle } from "lucide-re
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 
 // Zod Validation Schema
 const contactSchema = z.object({
@@ -70,6 +71,14 @@ export const Route = createFileRoute("/contact")({
     meta: [
       { title: "Book a Free Consultation — ALORA" },
       { name: "description", content: "Tell us about your practice. We'll show you exactly how ALORA can help you answer every patient call." },
+      { property: "og:url", content: `${SITE_URL}/contact` },
+      { name: "twitter:url", content: `${SITE_URL}/contact` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/contact` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "Book Consultation", path: "/contact" }]),
     ],
   }),
   component: Contact,

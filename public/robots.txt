@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://alora.health/sitemap.xml
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+
+Sitemap: https://aloravoice.vercel.app/sitemap.xml

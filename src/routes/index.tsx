@@ -15,6 +15,20 @@ import {
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { NetworkAnimation } from "@/components/site/NetworkAnimation";
 import { IndustriesMarquee } from "@/components/site/IndustriesMarquee";
+import { SITE_URL } from "../lib/config";
+
+const FAQS = [
+  { q: "What exactly does ALORA do?", a: "ALORA provides AI voice receptionists for clinics, hospitals, and healthcare practices. Our AI answers calls 24/7, books appointments, reschedules visits, answers common patient questions, sends reminders, and supports your front desk team." },
+  { q: "Will ALORA replace my front desk staff?", a: "No. ALORA is designed to support your team, not replace it. It handles repetitive calls and after-hours inquiries so your staff can spend more time helping patients in person." },
+  { q: "Will I need to replace my existing software?", a: "No. ALORA is designed to work alongside your existing workflows. We can integrate with calendars, scheduling systems, CRMs, and other tools your practice already uses whenever possible." },
+  { q: "How long does implementation take?", a: "Most clinics are up and running within a few days. The exact timeline depends on your call flows, scheduling requirements, and integrations, but our goal is to make setup as simple and fast as possible." },
+  { q: "What if the AI gives incorrect information to a patient?", a: "Every AI receptionist is customized and thoroughly tested before going live. We define exactly what information ALORA can provide, and complex situations can always be transferred to your staff." },
+  { q: "Can ALORA answer calls after business hours?", a: "Yes. ALORA works 24/7, including evenings, weekends, and holidays, ensuring your practice never misses another patient call." },
+  { q: "Can patients book and reschedule appointments?", a: "Yes. ALORA can book appointments, reschedule existing visits, send confirmations, and provide reminders based on your clinic's scheduling rules." },
+  { q: "Can ALORA handle multiple locations?", a: "Yes. We can configure separate call flows, hours, and scheduling rules for multi-location practices and healthcare groups." },
+  { q: "How much work is required from my team?", a: "Very little. We handle setup, configuration, testing, and deployment. Your team simply provides information about your practice, and we take care of the rest." },
+  { q: "How does pricing work?", a: "Every clinic has different call volumes and requirements, so we provide custom pricing based on your needs. Schedule a demo and we'll recommend the best solution for your practice." },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,6 +44,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Never miss another patient call. ALORA is a 24/7 AI receptionist built for clinics.",
       },
+      { property: "og:url", content: SITE_URL },
+      { name: "twitter:url", content: SITE_URL },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -37,6 +53,24 @@ export const Route = createFileRoute("/")({
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap",
+      },
+      { rel: "canonical", href: SITE_URL },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": FAQS.map((f) => ({
+            "@type": "Question",
+            "name": f.q,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": f.a,
+            },
+          })),
+        }),
       },
     ],
   }),
@@ -270,18 +304,6 @@ function Process() {
   );
 }
 
-const FAQS = [
-  { q: "What exactly does ALORA do?", a: "ALORA provides AI voice receptionists for clinics, hospitals, and healthcare practices. Our AI answers calls 24/7, books appointments, reschedules visits, answers common patient questions, sends reminders, and supports your front desk team." },
-  { q: "Will ALORA replace my front desk staff?", a: "No. ALORA is designed to support your team, not replace it. It handles repetitive calls and after-hours inquiries so your staff can spend more time helping patients in person." },
-  { q: "Will I need to replace my existing software?", a: "No. ALORA is designed to work alongside your existing workflows. We can integrate with calendars, scheduling systems, CRMs, and other tools your practice already uses whenever possible." },
-  { q: "How long does implementation take?", a: "Most clinics are up and running within a few days. The exact timeline depends on your call flows, scheduling requirements, and integrations, but our goal is to make setup as simple and fast as possible." },
-  { q: "What if the AI gives incorrect information to a patient?", a: "Every AI receptionist is customized and thoroughly tested before going live. We define exactly what information ALORA can provide, and complex situations can always be transferred to your staff." },
-  { q: "Can ALORA answer calls after business hours?", a: "Yes. ALORA works 24/7, including evenings, weekends, and holidays, ensuring your practice never misses another patient call." },
-  { q: "Can patients book and reschedule appointments?", a: "Yes. ALORA can book appointments, reschedule existing visits, send confirmations, and provide reminders based on your clinic's scheduling rules." },
-  { q: "Can ALORA handle multiple locations?", a: "Yes. We can configure separate call flows, hours, and scheduling rules for multi-location practices and healthcare groups." },
-  { q: "How much work is required from my team?", a: "Very little. We handle setup, configuration, testing, and deployment. Your team simply provides information about your practice, and we take care of the rest." },
-  { q: "How does pricing work?", a: "Every clinic has different call volumes and requirements, so we provide custom pricing based on your needs. Schedule a demo and we'll recommend the best solution for your practice." },
-];
 
 function FAQ() {
   const [open, setOpen] = useState<number | null>(0);

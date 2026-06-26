@@ -1,12 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { ShieldCheck, Lock, Eye, CheckCircle } from "lucide-react";
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
       { title: "Privacy Policy — ALORA" },
       { name: "description", content: "Learn how ALORA protects patient data, ensures HIPAA compliance, and secures your practice's voice communications." },
+      { property: "og:url", content: `${SITE_URL}/privacy` },
+      { name: "twitter:url", content: `${SITE_URL}/privacy` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/privacy` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "Privacy Policy", path: "/privacy" }]),
     ],
   }),
   component: Privacy,

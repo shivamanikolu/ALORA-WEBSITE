@@ -1,12 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Stethoscope, Hospital, Smile, HeartPulse, Brain, Baby, Eye, Activity } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 
 export const Route = createFileRoute("/solutions")({
   head: () => ({
     meta: [
       { title: "Solutions — ALORA" },
       { name: "description", content: "AI voice receptionists tailored for every healthcare specialty." },
+      { property: "og:url", content: `${SITE_URL}/solutions` },
+      { name: "twitter:url", content: `${SITE_URL}/solutions` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/solutions` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "Solutions", path: "/solutions" }]),
     ],
   }),
   component: Solutions,

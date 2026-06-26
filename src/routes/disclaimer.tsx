@@ -1,12 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { AlertTriangle, ShieldCheck, HeartPulse, CheckCircle } from "lucide-react";
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 
 export const Route = createFileRoute("/disclaimer")({
   head: () => ({
     meta: [
       { title: "Disclaimer — ALORA" },
       { name: "description", content: "Important legal disclaimers regarding the capabilities, limits, and medical boundaries of ALORA's healthcare AI receptionist service." },
+      { property: "og:url", content: `${SITE_URL}/disclaimer` },
+      { name: "twitter:url", content: `${SITE_URL}/disclaimer` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/disclaimer` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "Disclaimer", path: "/disclaimer" }]),
     ],
   }),
   component: Disclaimer,

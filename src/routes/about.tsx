@@ -1,12 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — ALORA" },
       { name: "description", content: "ALORA builds AI voice receptionists exclusively for healthcare. We believe technology should help clinicians spend more time with patients." },
+      { property: "og:url", content: `${SITE_URL}/about` },
+      { name: "twitter:url", content: `${SITE_URL}/about` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/about` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "About", path: "/about" }]),
     ],
   }),
   component: About,

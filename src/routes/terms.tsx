@@ -1,12 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Scale, FileText, HelpCircle, PhoneCall } from "lucide-react";
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
       { title: "Terms of Service — ALORA" },
       { name: "description", content: "Terms and conditions governing the use of ALORA's AI voice receptionists and healthcare communication platform." },
+      { property: "og:url", content: `${SITE_URL}/terms` },
+      { name: "twitter:url", content: `${SITE_URL}/terms` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/terms` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "Terms of Service", path: "/terms" }]),
     ],
   }),
   component: Terms,

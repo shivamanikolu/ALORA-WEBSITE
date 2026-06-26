@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Play, Pause, Mic } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useState, useRef, useEffect } from "react";
-
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 import jessicaAudio from "@/assets/jessica.mp3";
 import carolinaAudio from "@/assets/carolina.mp3";
 import kebinAudio from "@/assets/kebin.mp3";
@@ -13,6 +13,14 @@ export const Route = createFileRoute("/voice-agents")({
     meta: [
       { title: "Voice Agents — ALORA" },
       { name: "description", content: "Meet ALORA's AI voice receptionists, designed for healthcare conversations." },
+      { property: "og:url", content: `${SITE_URL}/voice-agents` },
+      { name: "twitter:url", content: `${SITE_URL}/voice-agents` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/voice-agents` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "Voice Agents", path: "/voice-agents" }]),
     ],
   }),
   component: VoiceAgents,

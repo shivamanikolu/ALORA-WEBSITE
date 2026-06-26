@@ -1,12 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Cookie, Settings, ShieldAlert, CheckCircle } from "lucide-react";
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 
 export const Route = createFileRoute("/cookie-policy")({
   head: () => ({
     meta: [
       { title: "Cookie Policy — ALORA" },
       { name: "description", content: "Understand how ALORA uses cookies, tracking pixels, and session storage to provide secure, high-performance voice reception services." },
+      { property: "og:url", content: `${SITE_URL}/cookie-policy` },
+      { name: "twitter:url", content: `${SITE_URL}/cookie-policy` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/cookie-policy` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "Cookie Policy", path: "/cookie-policy" }]),
     ],
   }),
   component: CookiePolicy,

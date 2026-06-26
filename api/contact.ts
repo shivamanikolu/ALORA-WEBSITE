@@ -5,8 +5,18 @@ import { handleContactSubmission } from "../lib/contactHandler";
  * Exposes a standard HTTP POST API endpoint at `/api/contact` for external webhook integrations.
  */
 export default async function handler(req: any, res: any) {
+  // CORS configuration (allow only the production URL, block wildcard *)
+  res.setHeader("Access-Control-Allow-Origin", "https://aloravoice.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Max-Age", "86400");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
+    res.setHeader("Allow", ["POST", "OPTIONS"]);
     return res.status(405).json({ success: false, message: "Method Not Allowed" });
   }
 

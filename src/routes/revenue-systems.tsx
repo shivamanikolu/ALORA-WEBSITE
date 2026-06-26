@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { SITE_URL, getBreadcrumbSchema } from "../lib/config";
 
 export const Route = createFileRoute("/revenue-systems")({
   head: () => ({
@@ -10,6 +11,14 @@ export const Route = createFileRoute("/revenue-systems")({
       { name: "description", content: "Three healthcare AI systems. Each solves one expensive problem — missed calls, front-desk overload, and lost patient inquiries." },
       { property: "og:title", content: "Patient Revenue Systems — ALORA" },
       { property: "og:description", content: "24/7 AI Receptionist, Front Desk Automation, and Patient Recovery — built for clinics." },
+      { property: "og:url", content: `${SITE_URL}/revenue-systems` },
+      { name: "twitter:url", content: `${SITE_URL}/revenue-systems` },
+    ],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/revenue-systems` },
+    ],
+    scripts: [
+      getBreadcrumbSchema([{ name: "Revenue Systems", path: "/revenue-systems" }]),
     ],
   }),
   component: RevenueSystems,

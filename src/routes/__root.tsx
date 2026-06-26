@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SITE_URL } from "../lib/config";
 
 function NotFoundComponent() {
   return (
@@ -88,8 +89,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "ALORA — AI Voice Receptionist for Clinics & Healthcare" },
       { property: "og:description", content: "HIPAA-compliant AI voice receptionists built exclusively for healthcare. Answer every patient call, schedule appointments, and reduce workloads 24/7." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://alora.health" },
-      { property: "og:image", content: "https://alora.health/og-image.png" },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:image", content: `${SITE_URL}/og-image.png` },
       { property: "og:site_name", content: "ALORA" },
       
       // Twitter Card SEO
@@ -97,13 +98,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@ALORAHealth" },
       { name: "twitter:title", content: "ALORA — AI Voice Receptionist for Clinics & Healthcare" },
       { name: "twitter:description", content: "HIPAA-compliant AI voice receptionists built exclusively for medical and dental clinics." },
-      { name: "twitter:image", content: "https://alora.health/og-image.png" },
+      { name: "twitter:image", content: `${SITE_URL}/og-image.png` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "canonical", href: "https://alora.health" },
-      { rel: "icon", href: "/favicon.ico" },
-      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+      { rel: "canonical", href: SITE_URL },
+      { rel: "icon", href: `${SITE_URL}/favicon.ico` },
+      { rel: "apple-touch-icon", sizes: "180x180", href: `${SITE_URL}/apple-touch-icon.png` },
       { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -117,9 +118,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "Organization",
           "name": "ALORA",
-          "url": "https://alora.health",
-          "logo": "https://alora.health/logo.png",
-          "description": "HIPAA-compliant AI voice receptionists for clinics, hospitals, and healthcare practices.",
+          "url": SITE_URL,
+          "logo": `${SITE_URL}/logo.png`,
+          "description": "AI Voice Agents for Clinics, Dental Practices, Hospitals, and Healthcare Providers.",
           "sameAs": [
             "https://twitter.com/alorahealth"
           ],
@@ -137,9 +138,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
           "name": "ALORA",
-          "image": "https://alora.health/logo.png",
-          "@id": "https://alora.health/#business",
-          "url": "https://alora.health",
+          "image": `${SITE_URL}/logo.png`,
+          "@id": `${SITE_URL}/#business`,
+          "url": SITE_URL,
           "telephone": "",
           "priceRange": "$$",
           "address": {
@@ -159,7 +160,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           "name": "ALORA",
-          "url": "https://alora.health"
+          "url": SITE_URL
         })
       },
       // Google Analytics 4 Script (loads external library safely)

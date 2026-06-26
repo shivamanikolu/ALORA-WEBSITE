@@ -30,13 +30,31 @@ async function applySecurityHeadersAndCSP(response: Response): Promise<Response>
   const nonce = crypto.randomBytes(16).toString("base64");
 
   // Create Strict CSP Whitelist
+  const isProd = process.env.NODE_ENV === "production";
+  const connectSrcDirectives = [
+    "connect-src 'self'",
+    "https://cloudflare-dns.com",
+    "https://*.clarity.ms",
+    "https://*.google-analytics.com",
+    "https://analytics.google.com",
+    "https://*.vapi.ai",
+    "https://*.bland.ai",
+    "https://*.retellai.com",
+    "wss://*.vercel.live",
+    "https://aloravoice.vercel.app",
+  ];
+
+  if (!isProd) {
+    connectSrcDirectives.push("ws://localhost:*", "http://localhost:*");
+  }
+
   const cspString = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'sha256-VRKfizwnyQxtND310AsmNPoFx6XzMKrglq3F12CdZv8=' https://vercel.live https://*.vercel.app https://www.googletagmanager.com https://*.clarity.ms https://challenges.cloudflare.com`,
+    `script-src 'self' 'nonce-${nonce}' 'sha256-VRKfizwnyQxtND310AsmNPoFx6XzMKrglq3F12CdZv8=' https://vercel.live https://*.vercel.app https://aloravoice.vercel.app https://www.googletagmanager.com https://*.clarity.ms https://challenges.cloudflare.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
-    "img-src 'self' data: https://flagcdn.com https://*.vercel.app https://*.vercel.live",
-    "connect-src 'self' https://cloudflare-dns.com https://*.clarity.ms https://*.google-analytics.com https://analytics.google.com https://*.vapi.ai https://*.bland.ai https://*.retellai.com wss://*.vercel.live ws://localhost:* http://localhost:*",
+    `img-src 'self' data: https://flagcdn.com https://*.vercel.app https://aloravoice.vercel.app https://*.vercel.live`,
+    connectSrcDirectives.join(" "),
     "frame-src 'self' https://vercel.live https://challenges.cloudflare.com",
     "object-src 'none'",
     "base-uri 'self'",
